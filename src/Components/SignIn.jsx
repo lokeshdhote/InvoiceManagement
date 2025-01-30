@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { userLogin } from "../Store/Actions/UserAction";
+import { userSignin } from "../Store/Actions/UserAction";
 
-const Login = () => {
-  const navigate = useNavigate();
+const SignIn = () => {
+    const naviagte = useNavigate();
   const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Validation function
   const validate = () => {
     let tempErrors = {};
 
+    if (!username.trim()) tempErrors.username = "Username is required";
     if (!email.trim()) {
       tempErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       tempErrors.email = "Invalid email format";
     }
-
     if (!password.trim()) {
       tempErrors.password = "Password is required";
     } else if (password.length < 6) {
@@ -27,32 +26,36 @@ const Login = () => {
     }
 
     setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0; // Return true if no errors
+    return Object.keys(tempErrors).length === 0;
   };
 
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      
-      dispatch(userLogin({ email, password }));
-      navigate("/invoice");
+      dispatch(userSignin({ username, email, password }));
+      naviagte("/invoice");
     }
-     
-       else {
-        setErrors({ general: "Invalid Email or Password!" });
-      }
-    
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Login</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Sign In</h2>
+        
+        <form onSubmit={handleSubmit}>
+          {/* Username */}
+          <div className="mb-4">
+            <label className="block text-gray-700">Username *</label>
+            <input
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+          </div>
 
-        {/* General Error */}
-        {errors.general && <p className="text-red-500 text-sm text-center">{errors.general}</p>}
-
-        <form onSubmit={handleLogin} className="mt-4">
           {/* Email */}
           <div className="mb-4">
             <label className="block text-gray-700">Email *</label>
@@ -62,7 +65,6 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
@@ -76,7 +78,6 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your password"
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
@@ -86,7 +87,7 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
           >
-            Login
+            Sign In
           </button>
         </form>
       </div>
@@ -94,4 +95,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;

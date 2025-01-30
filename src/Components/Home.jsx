@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Building2, Plus, Printer, Save, X } from 'lucide-react';
+import { useDispatch } from "react-redux";
+import { createinvoice } from "../Store/Actions/UserAction";
+import { Navigate, useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
 
 const Home = () => {
+  const dispatch = useDispatch()
+  const naviagte = useNavigate();
+
   const [customer, setCustomer] = useState({ name: "", address: "", number: "" });
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [items, setItems] = useState([{ id: 1, name: "", quantity: "", price: "" }]);
@@ -16,7 +23,9 @@ const Home = () => {
       setItems(parsedInvoice.items);
     }
   }, []);
-
+const goToHistory =()=>{
+  naviagte("/history")
+}
   const addItem = () => {
     setItems([...items, { id: Date.now(), name: "", quantity: "", price: "" }]);
   };
@@ -70,8 +79,11 @@ const Home = () => {
       items,
       total: calculateGrandTotal(),
     };
-    localStorage.setItem("invoice", JSON.stringify(invoiceData));
-    alert("Invoice saved successfully!");
+   dispatch(createinvoice(invoiceData))
+   window.location.reload();
+   invoiceData=null;
+  //  toast.success("Invoice saved successfully!")
+    
   };
 
   const printInvoice = () => {
@@ -474,6 +486,12 @@ const Home = () => {
             >
               <Printer className="w-4 h-4 mr-2" />
               Print Invoice
+            </button>
+            <button
+              onClick={goToHistory} // Navigate to the invoice history page
+              className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              View Invoice History
             </button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import 'remixicon/fonts/remixicon.css';
 import { Provider } from "react-redux";
 import { Store } from "./Store/Store.jsx";
@@ -14,7 +14,7 @@ if (typeof global === "undefined") {
 
 createRoot(document.getElementById("root")).render(
   <Provider store={Store}>
-    <BrowserRouter>
+    <HashRouter>
       <App />
       <ToastContainer
         position="top-center" // Set position to center at the top
@@ -27,6 +27,6 @@ createRoot(document.getElementById("root")).render(
         theme="colored" // Optional theme
         className="center-toast" // Add custom styles
       />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>
 );
